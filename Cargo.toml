@@ -3,6 +3,12 @@ name = "scrutch"
 version = "0.0.1"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
 description = "Tiny utility to search rust crates directly from the command line"
+documentation = "https://github.com/mseri/scrutch"
+homepage = "https://github.com/mseri/scrutch"
+repository = "https://github.com/mseri/scrutch"
+readme = "README.md"
+keywords = ["search", "crates"]
+license = "MIT"
 
 [dependencies]
 curl            = "0.2.10"
