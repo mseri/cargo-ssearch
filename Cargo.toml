@@ -1,6 +1,6 @@
 [package]
 name = "scrutch"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
 description = "Tiny utility to search rust crates directly from the command line"
 documentation = "https://github.com/mseri/scrutch"
@@ -14,3 +14,4 @@ license = "MIT"
 curl            = "0.2.10"
 docopt          = "0.6"
 rustc-serialize = "0.3"
+term            = "0.2"
