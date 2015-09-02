@@ -115,10 +115,3 @@ fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool
     p_white!(t, "\n");
   }
 }
-
-// fn print_if_present(prefix: &str, label: &str, data: &Option<String>) -> String {
-//   match data {
-//     &Some(ref info) => format!("{}{}{}\n", prefix, label, info),
-//     &None => format!("")
-//   }
-// }
