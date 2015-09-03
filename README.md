@@ -1,5 +1,5 @@
 # scrutch
-Tiny utility to search rust crates directly from the command line
+Tiny utility to search rust crates directly from the command line. The output gives all the necessary informations and uses colors to distinguish them more clearly.
 
 As simple as typing `scrutch -h`
 ```
