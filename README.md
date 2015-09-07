@@ -17,7 +17,19 @@ Options:
 ```
 
 The software was a very fastly made hack, but I am using it and I plan to implement a decent interface using [rustbox](https://github.com/gchp/rustbox).
-The information are obtained directly from crates.io. To compile `libcurl` is required.
+The information are obtained directly from crates.io. 
+
+## Build
+To compile `libcurl` is required.
+
+Then is enough to clone the repo and compile with cargo:
+```
+$ git clone https://github.com/mseri/scrutch
+$ cd scrutch
+$ cargo build --release
+```
+
+Scrutch can then be run via cargo itself or copied in a local path and run as standalone app.
 
 ## Examples
 
@@ -45,7 +57,6 @@ rustc-serialize = "0.3.16"  (downloads: 292822)
  -> Generic serialization/deserialization support corresponding to the
 `derive(RustcEncodable, RustcDecodable)` mode in the compiler. Also includes
 support for hex, base64, and json encoding and decoding.
-
     docs: http://doc.rust-lang.org/rustc-serialize
     home: https://github.com/rust-lang/rustc-serialize
 
