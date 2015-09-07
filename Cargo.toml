@@ -1,6 +1,6 @@
 [package]
 name = "scrutch"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
 description = "Tiny utility to search rust crates directly from the command line"
 documentation = "https://github.com/mseri/scrutch"
