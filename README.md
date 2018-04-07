@@ -104,7 +104,4 @@ scrutch = "0.0.3" (downloads: 1)
 # TODO
 
 The tool has never been updated as it still works properly.
-It would be nice to find the time to:
-
-- Update the code to more modern and idiomatic rust
-- Use reqwest
+It would be nice to find the time to update the code to more modern and idiomatic rust.
