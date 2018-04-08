@@ -3,16 +3,6 @@
 use std::io::prelude::*;
 
 #[macro_export]
-macro_rules! if_some {
-  ($con:expr, $fun:expr) => ({
-    if $con.is_some() {
-      $fun;
-    }
-  });
-}
-
-
-#[macro_export]
 macro_rules! p_red {
   ($dst:expr, $fmt:expr) => ({
     $dst.fg(term::color::RED).unwrap();

@@ -1,5 +1,6 @@
 #![allow(unused_must_use)]
 extern crate docopt;
+extern crate pad;
 extern crate reqwest;
 extern crate serde;
 
@@ -12,10 +13,10 @@ extern crate url;
 
 use std::env::args;
 use std::error::Error;
+use pad::PadStr;
 use std::process;
 use std::str;
 
-//use reqwest::reqwest;
 use docopt::Docopt;
 use url::percent_encoding::{utf8_percent_encode, QUERY_ENCODE_SET};
 
@@ -113,41 +114,37 @@ fn main() {
         crates.len(),
         args.arg_query
     );
-    for cr in crates {
-        show_crate(&mut t, &cr, args.flag_info);
+    let max_len =
+        (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
+    for cr in &crates {
+        show_crate(&mut t, &cr, args.flag_info, max_len);
     }
     t.reset().unwrap();
 }
 
-fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool) {
-    // TODO: make it more DRY
-    if info {
-        p_green!(t, "{}", cr.name);
-    } else {
-        p_green!(t, "{:<20}", cr.name);
-    }
+fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool, max_len: usize) {
 
-    // TODO: pad and align output more sensibly
+    p_green!(t, "{}", cr.name.pad_to_width(max_len));
     p_white!(
         t,
-        " = \"{}\"\t(downloads: {})\n",
+        " = \"{}\"    \t(downloads: {})\n",
         cr.max_version,
         cr.downloads
     );
 
     if info {
-        if_some!(
-            &cr.description,
-            p_yellow!(t, " -> {}\n", &cr.description.clone().unwrap().trim())
-        );
-        if_some!(
-            &cr.documentation,
-            p_white!(t, "    docs: {}\n", &cr.documentation.clone().unwrap())
-        );
-        if_some!(
-            &cr.homepage,
-            p_white!(t, "    home: {}\n", &cr.homepage.clone().unwrap())
-        );
+        cr.description.as_ref()
+            .map(|description|
+                 p_yellow!(t, " -> {}\n", description.clone().trim())
+            );
+        cr.documentation.as_ref()
+            .map(|documentation|
+                 p_white!(t, "    docs: {}\n", documentation)
+            );
+        cr.homepage.as_ref()
+            .map(|homepage|
+                 p_white!(t, "    home: {}\n", homepage)
+            );
         p_white!(t, "\n");
     }
 }
