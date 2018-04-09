@@ -1,8 +1,8 @@
 [package]
-name = "scrutch"
-version = "0.0.6"
+name = "cargo-ssearch"
+version = "0.1.0"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
-description = "Tiny utility to search rust crates directly from the command line"
+description = "cargo-search on steroids"
 documentation = "https://github.com/mseri/scrutch"
 homepage = "https://github.com/mseri/scrutch"
 repository = "https://github.com/mseri/scrutch"

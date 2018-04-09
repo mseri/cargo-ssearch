@@ -20,7 +20,7 @@ use quicli::prelude::*;
 #[macro_use]
 mod macros;
 
-/// Tiny utility to search rust crates directly from the command line
+/// cargo-search on steroids
 #[derive(Debug, StructOpt)]
 struct Cli {
     /// how many packages to display

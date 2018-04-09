@@ -1,102 +1,144 @@
 # scrutch
-Tiny utility to search rust crates directly from the command line. The output gives all the necessary informations and uses colors to distinguish them more clearly.
+Tiny utility to search rust crates directly from the command line.
+The output gives all the necessary informations and uses colors to distinguish them more clearly.
 
-As simple as typing `scrutch -h`
+As simple as typing `cargo ssearch --help`
 ```
-Scrutch - Crates Search
-
-Usage:
-  scrutch [--info] <query>
-  scrutch (-h | --help)
-  scrutch --version
-
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-  --info        Show complete details of the crates.
+cargo-ssearch 0.1.0
+Marcello Seri <marcello.seri@gmail.com>
+cargo-search on steroids
+USAGE:
+    cargo-ssearch [FLAGS] [OPTIONS] <query>
+FLAGS:
+    -h, --help       Prints help information
+    -q, --quiet      quiet output, display only crate, version and downloads
+    -V, --version    Prints version information
+OPTIONS:
+    -l, --limit <limit>    how many packages to display [default: 10]
+        --page <page>      the crates.io search result page to display [default: 1]
+ARGS:
+    <query>    query string for crates.io
 ```
 
-The software was a very fastly made hack, but I am using it and I plan to implement a decent interface using [rustbox](https://github.com/gchp/rustbox).
-The information are obtained directly from crates.io. 
+The software was a very fastly made hack, but I am using it and I am happy on how it works.
+The information are obtained directly from crates.io.
 
-## Build
-To compile `libcurl` is required.
-
-Then is enough to clone the repo and compile with cargo:
+## Build`
+It is enough to clone the repo and compile it with cargo:
 ```
 $ git clone https://github.com/mseri/scrutch
 $ cd scrutch
 $ cargo build --release
 ```
 
-Scrutch can then be run via cargo itself or copied in a local path and run as standalone app.
+The tool can then be run via cargo itself or installed in a local path and run as standalone app.
 
 ## Examples
 
 ```
-$ scrutch serialize
-scrutch: 10 crates found with query: "serialize"
-
-rustc-serialize      = "0.3.16" (downloads: 292822)
-serde                = "0.6.0"  (downloads: 22667)
-serde_json           = "0.6.0"  (downloads: 5302)
-rmp                  = "0.7.0"  (downloads: 461)
-serial               = "0.2.0"  (downloads: 385)
-dbus-serialize       = "0.1.1"  (downloads: 210)
-serial-win           = "0.1.1"  (downloads: 148)
-rmp-serde            = "0.7.0"  (downloads: 27)
-rmp-serialize        = "0.7.0"  (downloads: 19)
-scrutch              = "0.0.3"  (downloads: 1)
+$ cargo ssearch serialize --limit 20 -q
+Displaying 20 crates from page 1 out of the 466 found.
+serde                   = "1.0.37"      (downloads: 5160233)
+rustc-serialize         = "0.3.24"      (downloads: 4389049)
+serde_json              = "1.0.13"      (downloads: 2730954)
+toml                    = "0.4.6"       (downloads: 2190141)
+quote                   = "0.5.1"       (downloads: 2127675)
+serde_derive            = "1.0.37"      (downloads: 1870124)
+serde_derive_internals  = "0.23.0"      (downloads: 1376928)
+xml-rs                  = "0.7.0"       (downloads: 880986)
+serde_codegen_internals = "0.14.2"      (downloads: 741492)
+serde_codegen           = "0.9.0"       (downloads: 639554)
+handlebars              = "1.0.0-beta.1"        (downloads: 440993)
+cargo_metadata          = "0.5.4"       (downloads: 378409)
+bincode                 = "1.0.0"       (downloads: 331593)
+serde_urlencoded        = "0.5.1"       (downloads: 260365)
+serde_macros            = "0.8.9"       (downloads: 209024)
+serde_cbor              = "0.8.2"       (downloads: 179360)
+serde_yaml              = "0.7.3"       (downloads: 162988)
+postgres                = "0.15.2"      (downloads: 99893)
+rmp                     = "0.8.7"       (downloads: 99743)
+sodiumoxide             = "0.0.16"      (downloads: 87682)
 ```
 
 ```
-$ scrutch serialize --info
-scrutch: 10 crates found with query: "serialize"
+$ cargo ssearch serialize -q --limit 20 -r
+Displaying 20 crates from page 1 out of the 466 found.
+serde                   = "1.0.37"      (downloads: 5160233)
+quote                   = "0.5.1"       (downloads: 2127675)
+serde_json              = "1.0.13"      (downloads: 2730954)
+serde_derive            = "1.0.37"      (downloads: 1870124)
+serde_derive_internals  = "0.23.0"      (downloads: 1376928)
+toml                    = "0.4.6"       (downloads: 2190141)
+rustc-serialize         = "0.3.24"      (downloads: 4389049)
+cargo_metadata          = "0.5.4"       (downloads: 378409)
+xml-rs                  = "0.7.0"       (downloads: 880986)
+handlebars              = "1.0.0-beta.1"        (downloads: 440993)
+serde_urlencoded        = "0.5.1"       (downloads: 260365)
+bincode                 = "1.0.0"       (downloads: 331593)
+rustc-ap-serialize      = "92.0.0"      (downloads: 69093)
+serde_codegen_internals = "0.14.2"      (downloads: 741492)
+serde_yaml              = "0.7.3"       (downloads: 162988)
+encoding_rs             = "0.7.2"       (downloads: 85705)
+serde_cbor              = "0.8.2"       (downloads: 179360)
+serde_codegen           = "0.9.0"       (downloads: 639554)
+serde_test              = "1.0.37"      (downloads: 82573)
+rmp                     = "0.8.7"       (downloads: 99743)
+```
 
-rustc-serialize = "0.3.16"  (downloads: 292822)
+```
+$ cargo ssearch serialize
+Displaying 10 crates from page 1 out of the 466 found.
+
+serde                   = "1.0.37"      (downloads: 5160233)
+ -> A generic serialization/deserialization framework
+    docs: https://docs.serde.rs/serde/
+    home: https://serde.rs
+
+rustc-serialize         = "0.3.24"      (downloads: 4389049)
  -> Generic serialization/deserialization support corresponding to the
 `derive(RustcEncodable, RustcDecodable)` mode in the compiler. Also includes
 support for hex, base64, and json encoding and decoding.
-    docs: http://doc.rust-lang.org/rustc-serialize
+    docs: https://doc.rust-lang.org/rustc-serialize
     home: https://github.com/rust-lang/rustc-serialize
 
-serde = "0.6.0" (downloads: 22667)
- -> A generic serialization/deserialization framework
-    docs: https://serde-rs.github.io/serde/serde/serde/index.html
-
-serde_json = "0.6.0"  (downloads: 5302)
+serde_json              = "1.0.13"      (downloads: 2730954)
  -> A JSON serialization file format
-    docs: https://serde-rs.github.io/json/serde_json/
+    docs: http://docs.serde.rs/serde_json/
 
-rmp = "0.7.0" (downloads: 461)
- -> Pure Rust MessagePack serialization implementation
-    docs: https://3hren.github.io/msgpack-rust/rmp/index.html
+toml                    = "0.4.6"       (downloads: 2190141)
+ -> A native Rust encoder and decoder of TOML-formatted files and streams. Provides
+implementations of the standard Serialize/Deserialize traits for TOML data to
+facilitate deserializing and serializing Rust structures.
+    docs: https://docs.rs/toml
+    home: https://github.com/alexcrichton/toml-rs
 
-serial = "0.2.0"  (downloads: 385)
- -> Rust library for accessing serial ports.
-    docs: https://dcuddeback.github.io/serial-rs/serial/
-    home: https://github.com/dcuddeback/serial-rs
+quote                   = "0.5.1"       (downloads: 2127675)
+ -> Quasi-quoting macro quote!(...)
+    docs: https://docs.rs/quote/
 
-dbus-serialize = "0.1.1"  (downloads: 210)
- -> Encoder / Decoder for D-Bus Types
-    docs: http://srwalter.github.io/dbus-serialize/doc/dbus_serialize/types/index.html
+serde_derive            = "1.0.37"      (downloads: 1870124)
+ -> Macros 1.1 implementation of #[derive(Serialize, Deserialize)]
+    docs: https://serde.rs/codegen.html
+    home: https://serde.rs
 
-serial-win = "0.1.1"  (downloads: 148)
- -> Serial communications in Windows
-    docs: http://bryal.github.io/serial-win-rs/serial_win/
+serde_derive_internals  = "0.23.0"      (downloads: 1376928)
+ -> AST representation used by Serde derive macros. Unstable.
+    docs: https://docs.serde.rs/serde_derive_internals/
+    home: https://serde.rs
 
-rmp-serde = "0.7.0" (downloads: 27)
- -> Serde bindings for RMP
-    docs: https://3hren.github.io/msgpack-rust/rmp/index.html
+xml-rs                  = "0.7.0"       (downloads: 880986)
+ -> An XML library in pure Rust
+    docs: http://netvl.github.io/xml-rs/
 
-rmp-serialize = "0.7.0" (downloads: 19)
- -> Rust Serialize bindings for RMP
-    docs: https://3hren.github.io/msgpack-rust/rmp/index.html
+serde_codegen_internals = "0.14.2"      (downloads: 741492)
+ -> AST representation used by Serde codegen. Unstable.
+    docs: https://docs.serde.rs/serde_codegen_internals/
+    home: https://serde.rs
 
-scrutch = "0.0.3" (downloads: 1)
- -> Tiny utility to search rust crates directly from the command line
-    docs: https://github.com/mseri/scrutch
-    home: https://github.com/mseri/scrutch
+serde_codegen           = "0.9.0"       (downloads: 639554)
+ -> Macros to auto-generate implementations for the serde framework
+    docs: https://serde.rs/codegen.html
+    home: https://serde.rs
 
 
 ```
@@ -105,3 +147,4 @@ scrutch = "0.0.3" (downloads: 1)
 
 The tool has never been updated as it still works properly.
 It would be nice to find the time to update the code to more modern and idiomatic rust.
+
