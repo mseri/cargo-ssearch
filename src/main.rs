@@ -20,20 +20,26 @@ use quicli::prelude::*;
 #[macro_use]
 mod macros;
 
-/// cargo-search on steroids
 #[derive(Debug, StructOpt)]
-struct Cli {
-    /// how many packages to display
-    #[structopt(long = "limit", short = "l", default_value = "10")]
-    limit: usize,
-    /// the crates.io search result page to display
-    #[structopt(long = "page", default_value = "1")]
-    page: usize,
-    /// quiet output, display only crate, version and downloads
-    #[structopt(long = "quiet", short = "q")]
-    quiet: bool,
-    /// query string for crates.io
-    query: String,
+#[structopt(name = "cargo")]
+enum Cli {
+    #[structopt(name = "ssearch", about = "cargo search on steroids")]
+    Ssearch {
+        /// how many packages to display
+        #[structopt(long = "limit", short = "l", default_value = "10")]
+        limit: usize,
+        /// the crates.io search result page to display
+        #[structopt(long = "page", default_value = "1")]
+        page: usize,
+        /// quiet output, display only crate, version and downloads
+        #[structopt(long = "quiet", short = "q")]
+        quiet: bool,
+        /// sort by recent downloads instead of overall downloads
+        #[structopt(long = "recent", short = "r")]
+        recent: bool,
+        /// query string for crates.io
+        query: String,
+    },
 }
 
 #[derive(Debug, Deserialize)]
@@ -85,13 +91,20 @@ fn query_crates_io(
     query: &str,
     page: usize,
     per_page: usize,
+    recent: bool,
 ) -> Result<(i32, Vec<EncodableCrate>)> {
+    let sort = if recent {
+        "recent-downloads"
+    } else {
+        "downloads"
+    };
     let url = Url::parse_with_params(
         "https://crates.io/api/v1/crates",
         &[
             ("q", query),
             ("page", &page.to_string()),
             ("per_page", &per_page.to_string()),
+            ("sort", &sort),
         ],
     )?;
     let body = reqwest::get(url)?.text()?;
@@ -123,26 +136,32 @@ fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, quiet: boo
 }
 
 main!(|args: Cli| {
+    let Cli::Ssearch {
+        query,
+        page,
+        limit,
+        quiet,
+        recent,
+    } = args;
+
     let mut t = term::stdout().unwrap();
 
     // TODO: Add decoding of updated_at and allow to use it for sorting
-    let (total, mut crates) =
-        query_crates_io(&args.query, args.page, args.limit).unwrap_or_else(|e| {
-            p_red!(t, "[error]: {}\n", e);
-            process::exit(1)
-        });
-    crates.sort_by(|c1, c2| c2.downloads.cmp(&c1.downloads));
+    let (total, crates) = query_crates_io(&query, page, limit, recent).unwrap_or_else(|e| {
+        p_red!(t, "[error]: {}\n", e);
+        process::exit(1)
+    });
 
     p_white!(
         t,
         "Displaying {} crates from page {} out of the {} found.\n\n",
         crates.len(),
-        args.page,
+        page,
         total,
     );
     let max_len = (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
     for cr in &crates {
-        show_crate(&mut t, &cr, args.quiet, max_len);
+        show_crate(&mut t, &cr, quiet, max_len);
     }
 
     t.reset().unwrap();
