@@ -2,7 +2,7 @@
 name = "cargo-ssearch"
 version = "0.1.0"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
-description = "cargo-search on steroids"
+description = "cargo search on steroids"
 documentation = "https://github.com/mseri/scrutch"
 homepage = "https://github.com/mseri/scrutch"
 repository = "https://github.com/mseri/scrutch"
