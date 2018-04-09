@@ -1,6 +1,6 @@
 [package]
 name = "cargo-ssearch"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Marcello Seri <marcello.seri@gmail.com>"]
 description = "cargo search on steroids"
 documentation = "https://github.com/mseri/scrutch"
