@@ -120,8 +120,7 @@ fn main() {
         args.arg_query,
         crates.len()
     );
-    let max_len =
-        (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
+    let max_len = (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
     for cr in &crates {
         show_crate(&mut t, &cr, args.flag_info, max_len);
     }
@@ -129,7 +128,6 @@ fn main() {
 }
 
 fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool, max_len: usize) {
-
     p_green!(t, "{}", cr.name.pad_to_width(max_len));
     p_white!(
         t,
@@ -139,18 +137,15 @@ fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool
     );
 
     if info {
-        cr.description.as_ref()
-            .map(|description|
-                 p_yellow!(t, " -> {}\n", description.clone().trim())
-            );
-        cr.documentation.as_ref()
-            .map(|documentation|
-                 p_white!(t, "    docs: {}\n", documentation)
-            );
-        cr.homepage.as_ref()
-            .map(|homepage|
-                 p_white!(t, "    home: {}\n", homepage)
-            );
+        cr.description
+            .as_ref()
+            .map(|description| p_yellow!(t, " -> {}\n", description.clone().trim()));
+        cr.documentation
+            .as_ref()
+            .map(|documentation| p_white!(t, "    docs: {}\n", documentation));
+        cr.homepage
+            .as_ref()
+            .map(|homepage| p_white!(t, "    home: {}\n", homepage));
         p_white!(t, "\n");
     }
 }
