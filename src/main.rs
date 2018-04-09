@@ -9,7 +9,6 @@ extern crate serde_derive;
 
 extern crate serde_json;
 extern crate term;
-extern crate url;
 
 use std::env::args;
 use std::error::Error;
@@ -18,7 +17,7 @@ use std::process;
 use std::str;
 
 use docopt::Docopt;
-use url::percent_encoding::{utf8_percent_encode, QUERY_ENCODE_SET};
+use reqwest::Url;
 
 #[macro_use]
 mod macros;
@@ -82,16 +81,22 @@ struct CrateLinks {
     reverse_dependencies: String,
 }
 
-fn query_crates_io(query: &str) -> Result<Vec<EncodableCrate>, Box<Error>> {
-    // TODO: think about implementing page and per_page via an option,
-    //       use Url::parse_with_params
-    let url = format!(
-        "https://crates.io/api/v1/crates?q={}", //&page=1&per_page=10",
-        utf8_percent_encode(query, QUERY_ENCODE_SET)
-    );
-    let body = reqwest::get(&url)?.text()?;
+fn query_crates_io(
+    query: &str,
+    page: i64,
+    per_page: i64,
+) -> Result<(i32, Vec<EncodableCrate>), Box<Error>> {
+    let url = Url::parse_with_params(
+        "https://crates.io/api/v1/crates",
+        &[
+            ("q", query),
+            ("page", &page.to_string()),
+            ("per_page", &per_page.to_string()),
+        ],
+    )?;
+    let body = reqwest::get(url)?.text()?;
     let data: Response = serde_json::from_str(&body)?;
-    Ok(data.crates)
+    Ok((data.meta.total, data.crates))
 }
 
 fn main() {
@@ -102,7 +107,7 @@ fn main() {
     let mut t = term::stdout().unwrap();
 
     // TODO: Add decoding of updated_at and allow to use it for sorting
-    let mut crates = query_crates_io(&args.arg_query).unwrap_or_else(|e| {
+    let (total, mut crates) = query_crates_io(&args.arg_query, 1, 10).unwrap_or_else(|e| {
         p_red!(t, "[error]: {}\n", e.description());
         process::exit(1)
     });
@@ -110,9 +115,10 @@ fn main() {
 
     p_white!(
         t,
-        "scrutch: {} crates found with query: \"{}\"\n\n",
-        crates.len(),
-        args.arg_query
+        "scrutch: {} crates found with query: \"{}\". Displaying {}.\n\n",
+        total,
+        args.arg_query,
+        crates.len()
     );
     let max_len =
         (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
