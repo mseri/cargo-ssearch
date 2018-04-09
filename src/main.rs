@@ -1,40 +1,40 @@
 #![allow(unused_must_use)]
-extern crate docopt;
 extern crate pad;
+#[macro_use]
+extern crate quicli;
 extern crate reqwest;
 extern crate serde;
-
 #[macro_use]
 extern crate serde_derive;
-
 extern crate serde_json;
 extern crate term;
 
-use std::env::args;
-use std::error::Error;
 use pad::PadStr;
+use reqwest::Url;
+
 use std::process;
 use std::str;
 
-use docopt::Docopt;
-use reqwest::Url;
+use quicli::prelude::*;
 
 #[macro_use]
 mod macros;
 
-const USAGE: &'static str = "
-Scrutch - Crates Search
-
-Usage:
-  scrutch [--info] <query>
-  scrutch (-h | --help)
-  scrutch (-v | --version)
-
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-  --info        Show complete details of the crates.
-";
+/// Tiny utility to search rust crates directly from the command line
+#[derive(Debug, StructOpt)]
+struct Cli {
+    /// how many packages to display
+    #[structopt(long = "limit", short = "l", default_value = "10")]
+    limit: usize,
+    /// the crates.io search result page to display
+    #[structopt(long = "page", default_value = "1")]
+    page: usize,
+    /// quiet output, display only crate, version and downloads
+    #[structopt(long = "quiet", short = "q")]
+    quiet: bool,
+    /// query string for crates.io
+    query: String,
+}
 
 #[derive(Debug, Deserialize)]
 struct Args {
@@ -83,9 +83,9 @@ struct CrateLinks {
 
 fn query_crates_io(
     query: &str,
-    page: i64,
-    per_page: i64,
-) -> Result<(i32, Vec<EncodableCrate>), Box<Error>> {
+    page: usize,
+    per_page: usize,
+) -> Result<(i32, Vec<EncodableCrate>)> {
     let url = Url::parse_with_params(
         "https://crates.io/api/v1/crates",
         &[
@@ -99,35 +99,7 @@ fn query_crates_io(
     Ok((data.meta.total, data.crates))
 }
 
-fn main() {
-    let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.argv(args().into_iter()).deserialize())
-        .unwrap_or_else(|e| e.exit());
-
-    let mut t = term::stdout().unwrap();
-
-    // TODO: Add decoding of updated_at and allow to use it for sorting
-    let (total, mut crates) = query_crates_io(&args.arg_query, 1, 10).unwrap_or_else(|e| {
-        p_red!(t, "[error]: {}\n", e.description());
-        process::exit(1)
-    });
-    crates.sort_by(|c1, c2| c2.downloads.cmp(&c1.downloads));
-
-    p_white!(
-        t,
-        "scrutch: {} crates found with query: \"{}\". Displaying {}.\n\n",
-        total,
-        args.arg_query,
-        crates.len()
-    );
-    let max_len = (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
-    for cr in &crates {
-        show_crate(&mut t, &cr, args.flag_info, max_len);
-    }
-    t.reset().unwrap();
-}
-
-fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool, max_len: usize) {
+fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, quiet: bool, max_len: usize) {
     p_green!(t, "{}", cr.name.pad_to_width(max_len));
     p_white!(
         t,
@@ -136,7 +108,7 @@ fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool
         cr.downloads
     );
 
-    if info {
+    if !quiet {
         cr.description
             .as_ref()
             .map(|description| p_yellow!(t, " -> {}\n", description.clone().trim()));
@@ -149,3 +121,29 @@ fn show_crate(t: &mut Box<term::StdoutTerminal>, cr: &EncodableCrate, info: bool
         p_white!(t, "\n");
     }
 }
+
+main!(|args: Cli| {
+    let mut t = term::stdout().unwrap();
+
+    // TODO: Add decoding of updated_at and allow to use it for sorting
+    let (total, mut crates) =
+        query_crates_io(&args.query, args.page, args.limit).unwrap_or_else(|e| {
+            p_red!(t, "[error]: {}\n", e);
+            process::exit(1)
+        });
+    crates.sort_by(|c1, c2| c2.downloads.cmp(&c1.downloads));
+
+    p_white!(
+        t,
+        "Displaying {} crates from page {} out of the {} found.\n\n",
+        crates.len(),
+        args.page,
+        total,
+    );
+    let max_len = (&crates).iter().map(|ref cr| cr.name.len()).max().unwrap();
+    for cr in &crates {
+        show_crate(&mut t, &cr, args.quiet, max_len);
+    }
+
+    t.reset().unwrap();
+});
