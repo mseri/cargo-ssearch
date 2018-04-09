@@ -153,6 +153,12 @@ main!(|args: Cli| {
         process::exit(1)
     });
 
+    if total == 0 {
+        p_white!(t, "No crate matching \"{}\" has been found.\n", query);
+        t.reset().unwrap();
+        process::exit(0);
+    }
+
     p_white!(
         t,
         "Displaying {} crates from page {} out of the {} found.\n\n",
