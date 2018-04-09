@@ -148,7 +148,8 @@ main!(|args: Cli| {
 
     // TODO: Add decoding of updated_at and allow to use it for sorting
     let (total, crates) = query_crates_io(&query, page, limit, recent).unwrap_or_else(|e| {
-        p_red!(t, "[error]: {}\n", e);
+        p_red!(t, "[error]: {}.\n", e);
+        t.reset().unwrap();
         process::exit(1)
     });
 
