@@ -10,7 +10,7 @@ cargo-ssearch-ssearch 0.1.1
 Marcello Seri <marcello.seri@gmail.com>
 cargo search on steroids
 USAGE:
-    cargo-ssearch ssearch [FLAGS] [OPTIONS] <query>
+    cargo ssearch [FLAGS] [OPTIONS] <query>
 FLAGS:
     -h, --help       Prints help information
     -q, --quiet      quiet output, display only crate, version and downloads
