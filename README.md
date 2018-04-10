@@ -1,17 +1,20 @@
-# scrutch
-Tiny utility to search rust crates directly from the command line.
-The output gives all the necessary informations and uses colors to distinguish them more clearly.
+# cargo ssearch -- cargo search on steroids
 
-As simple as typing `cargo ssearch --help`
+With cargo search you often can miss very used packages, for example `cargo search serialize` does not show `serde` in the default output and it only shows `serde_json` if you ask for the first 20 results.
+
+This search tool gets the results sorted by downloads (or recent downloads) and optionally displayes additional useful resoruces linke homepage and documentation for the user to go and have a look. The output uses colours to distinguish the reults (hopefully) more clearly.
+
+The usage is as simple as typing `cargo ssearch --help`
 ```
-cargo-ssearch 0.1.0
+cargo-ssearch-ssearch 0.1.1
 Marcello Seri <marcello.seri@gmail.com>
-cargo-search on steroids
+cargo search on steroids
 USAGE:
-    cargo-ssearch [FLAGS] [OPTIONS] <query>
+    cargo-ssearch ssearch [FLAGS] [OPTIONS] <query>
 FLAGS:
     -h, --help       Prints help information
     -q, --quiet      quiet output, display only crate, version and downloads
+    -r, --recent     sort by recent downloads instead of overall downloads
     -V, --version    Prints version information
 OPTIONS:
     -l, --limit <limit>    how many packages to display [default: 10]
