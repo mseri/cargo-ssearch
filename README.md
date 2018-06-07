@@ -26,7 +26,7 @@ ARGS:
 The software was a very fastly made hack, but I am using it and I am happy on how it works.
 The information are obtained directly from crates.io.
 
-## Build`
+## Build
 It is enough to clone the repo and compile it with cargo:
 ```
 $ git clone https://github.com/mseri/scrutch
