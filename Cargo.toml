@@ -7,7 +7,7 @@ documentation = "https://github.com/mseri/scrutch"
 homepage = "https://github.com/mseri/scrutch"
 repository = "https://github.com/mseri/scrutch"
 readme = "README.md"
-keywords = ["search", "crates", "cargo", "subcommand", "cli", "cargo-subcommand"]
+keywords = ["search", "cargo", "subcommand", "cli", "cargo-subcommand"]
 license = "MIT"
 
 [dependencies]
