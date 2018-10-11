@@ -6,7 +6,7 @@ This search tool gets the results sorted by downloads (or recent downloads) and 
 
 The usage is as simple as typing `cargo ssearch --help`
 ```
-cargo-ssearch-ssearch 0.1.2
+cargo-ssearch-ssearch 0.1.3
 Marcello Seri <marcello.seri@gmail.com>
 cargo search on steroids
 USAGE:
